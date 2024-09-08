@@ -6,6 +6,7 @@
 VPC_ID="vpc-0e7536971adbad31f"  # 사용할 VPC의 ID
 EFS_NAME="efs-us-east-1-web2"   # 생성할 EFS의 이름
 REGION="us-east-1"              # 사용할 AWS 리전 (미국 동부)
+
 ```
 
 
@@ -21,9 +22,10 @@ REGION="us-east-1"              # 사용할 AWS 리전 (미국 동부)
 VPC_ID="vpc-037583408fac9602d"
 EFS_NAME="efs-us-east-1-web2"
 REGION="us-west-2" # 미국 서부(오레곤) 리전
+SECURITY_GROUP_NAME="web-source-security-group" # 보안 그룹 이름
 
 # 보안 그룹 ID 가져오기
-SECURITY_GROUP_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=web-source-security-group" --query "SecurityGroups[0].GroupId" --output text --region $REGION)
+SECURITY_GROUP_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=$SECURITY_GROUP_NAME" --query "SecurityGroups[0].GroupId" --output text --region $REGION)
 
 if [ -z "$SECURITY_GROUP_ID" ]; then
   echo "보안 그룹 ID를 찾을 수 없습니다!"
