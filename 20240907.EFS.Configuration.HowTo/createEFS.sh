@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # 변수 설정
-VPC_ID="vpc-0e7536971adbad31f"
+VPC_ID="vpc-037583408fac9602d"
 EFS_NAME="efs-us-east-1-web3"
-REGION="us-east-1" # 미국 동부(버지니아 북부) 리전
+REGION="us-west-2" # 미국 서부(오레곤) 리전
 
 # 보안 그룹 ID 가져오기
-SECURITY_GROUP_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=web-target-security-group" --query "SecurityGroups[0].GroupId" --output text --region $REGION)
+SECURITY_GROUP_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=web-source-security-group" --query "SecurityGroups[0].GroupId" --output text --region $REGION)
 
 if [ -z "$SECURITY_GROUP_ID" ]; then
   echo "보안 그룹 ID를 찾을 수 없습니다!"
@@ -55,3 +55,12 @@ echo "EFS 생성 및 Mount Target 설정 완료."
 aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 2049 --source-group $SECURITY_GROUP_ID --region $REGION
 
 echo "Security Group $SECURITY_GROUP_ID에 NFS 포트(2049) 접근 허용 완료."
+
+# 6. EFS 마운트 명령어 출력
+# 생성된 EFS를 마운트할 수 있는 명령어를 출력
+echo "EFS를 마운트하려면 다음 명령어를 사용하세요:"
+echo "sudo mount -t efs -o tls $EFS_ID:/ /mnt/efs"
+
+# 마운트 포인트 디렉토리 생성 (필요한 경우)
+echo "마운트 포인트 디렉토리가 없다면 다음 명령어로 생성하세요:"
+echo "sudo mkdir -p /mnt/efs"
